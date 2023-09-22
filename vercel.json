@@ -1,4 +1,5 @@
 {
+    "version": 2,
     "builds": [
         {
             "src": "invo/wsgi.py",
@@ -10,17 +11,20 @@
         },
         {
             "src": "build_files.sh",
-            "use": "@vercel/python",
+            "use": "@vercel/static-build",
             "config": {
-                "maxLambdaSize": "15mb",
-                "runtime": "python3.9"
+                "distDir": "staticfiles_build"
             }
         }
     ],
     "routes": [
         {
+            "src": "/static/(.*)",
+            "dest": "/static/$1"
+        },
+        {
             "src": "/(.*)",
-            "dest": "invo/wsgi.py"
+            "dest": "myweb/wsgi.py"
         }
     ]
 }

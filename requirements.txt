@@ -4,4 +4,4 @@ mysqlclient==2.2.0
 Pillow==10.0.0
 sqlparse==0.4.4
 tzdata==2023.3
-pymysql
+psycopg2-binary==2.9.6

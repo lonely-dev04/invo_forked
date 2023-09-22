@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ou=49f7o%m5++slsgo5-cy&b17fw6p#p#f$7s!5e+90%#en^i1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1','.vercel.app']
+ALLOWED_HOSTS = ['.vercel.app','now.sh','127.0.0.1','localhost']
 
 
 # Application definition
@@ -79,18 +79,14 @@ WSGI_APPLICATION = 'invo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME' : 'invo' ,
-        'HOST' : 'localhost' ,
-        'USER' : 'root' ,
-        'PASSWORD' : '' ,
-        'PORT' : '3306',
-        'OPTIONS': {
-            'driver': 'pymysql',
-        },
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'QKP1Lah6CNwlYFmEiJyD',
+        'HOST': 'containers-us-west-87.railway.app',
+        'PORT': '7154',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -130,10 +126,9 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
 
-STATICFILES_DIRS = [
-    BASE_DIR / 'static'
-]
 
+STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 
 
 # Default primary key field type
