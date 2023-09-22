@@ -1,0 +1,172 @@
+{% extends 'myshop/ui.html' %}
+{% load static %}
+
+{% block title %}
+| Product Edit
+{% endblock %}
+
+{% block content %}
+
+
+
+<style>
+    @media (max-width: 768px) {
+        .btgrp {
+            float: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .btgrp .btn {
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <h5 class="card-title fw-semibold mb-4">Products</h5>
+                {% for x in products %}
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="{{ x.product_image.url }}" class="card-img-top" alt="img not found">
+
+                        <div class="card-body">
+                            <h5 class="card-title">{{ x.name }}</h5>
+                            <p class="card-text overflow-auto" style="height: 80px;">{{ x.description }}</p>
+
+                            <div class="btgrp" style="float: right;">
+                                <a href="#" class="btn btn-primary col" data-bs-toggle="modal"
+                                    data-bs-target="#{{ x.product_id }}edit">
+                                    <i class="ti ti-edit"></i> Edit
+                                </a>
+                                <a href="#" class="btn btn-danger col">
+                                    <i class="ti ti-trash"></i> Remove
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <a class="btn btn-primary btn-lg fixed-right text-center" href="{% url 'addproducts' shopdomain=request.session.shopdomain %}"
+            style="padding: 10px; position: fixed; bottom: 45px; right: 56px; z-index: 999;">
+            <i class="ti ti-plus"></i> New
+        </a>
+    </div>
+</div>
+
+{% for x in products %}
+<div class="modal" id="{{ x.product_id }}edit" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Product Edit</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+
+            <div class="modal-body">
+                <form action="{% url 'edit_product' shopdomain=request.session.shopdomain %}" id="formedit{{ x.product_id }}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ x.product_id }}">
+                    <div class="mb-3">
+                        <label class="form-label">Product Name</label>
+                        <input type="text" class="form-control" name="name" value="{{ x.name }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Product Description</label>
+                        <p class="card-text">
+                            <textarea class="form-control" rows="4" name="description"
+                                style="resize: none;">{{ x.description }}</textarea>
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label class="form-label">Original Price</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">₹</span>
+                                    <input type="text" class="form-control" name="original_price"
+                                        value="{{ x.original_price }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label">Selling Price</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">₹</span>
+                                    <input type="text" class="form-control" name="selling_price"
+                                        value="{{ x.selling_price }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-sm-6">
+                            <label class="form-label">In Stock</label>
+                            <input type="number" class="form-control" name="quantity" value="{{ x.quantity }}">
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label">Add Stock</label>
+                            <div class="input-group" style="min-width: 200px; max-width: 220px;">
+
+                                <div class="input-group-prepend">
+                                    <a class="btn btn-outline-dark" id="decrease"
+                                        onclick="decreaseValue{{ x.product_id }}()"
+                                        style="border-radius: 0; border-top-left-radius: 15px; border-bottom-left-radius: 15px; height: 40px;">-</a>
+                                </div>
+                                <input type="text" class="form-control text-center border border-dark"
+                                    id="{{ x.product_id }}value" name="addstock" style=" height: 40px;" value="0">
+                                <div class="input-group-append">
+                                    <a class="btn btn-outline-dark" id="increase"
+                                        onclick="increaseValue{{ x.product_id }}()"
+                                        style="border-radius: 0; border-top-right-radius: 15px; border-bottom-right-radius: 15px; height: 40px;">+</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3 form-check form-switch checkbox-lg col mt-3" style="margin-left: 10px;">
+                                <input type="checkbox" class="form-check-input" 
+                                {% if not x.status %}
+                                checked
+                                {% endif %}>
+                                <label class="form-check-label">Display Product</label>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="formedit{{ x.product_id }}" class="btn btn-primary">
+                    Save changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function increaseValue{{ x.product_id }} () {
+        var value = document.getElementById("{{ x.product_id }}value").value;
+        value++;
+        document.getElementById("{{ x.product_id }}value").value = value;
+    }
+
+    function decreaseValue{{ x.product_id }} () {
+        var value = document.getElementById("{{ x.product_id }}value").value;
+        value--;
+        document.getElementById("{{ x.product_id }}value").value = value;
+    }
+</script>
+{% endfor %}
+
+{% endblock %}

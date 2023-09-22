@@ -1,0 +1,27 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        INVO | 
+        {% block title %}
+        {% endblock %}
+    
+    </title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'myshop/images/logos/Cart-cropped.png' %}" />
+    <link rel="stylesheet" href="{% static 'myshop/css/styles.min.css' %}" />
+</head>
+
+<body>
+    {% block content %}
+    {% endblock %}
+
+    <script src="{% static 'myshop/libs/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'myshop/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+
+</html>

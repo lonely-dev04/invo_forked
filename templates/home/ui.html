@@ -1,0 +1,201 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Untree.co">
+
+	<meta name="description" content="" />
+	<meta name="keywords" content="bootstrap, bootstrap4" />
+	<link rel="shortcut icon" type="image/png" href="{% static 'myshop/images/logos/Cart-cropped.png' %}" />
+	<!-- Bootstrap CSS -->
+	<link href="{% static 'home/css/bootstrap.min.css' %}" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+	<link href="{% static 'home/css/tiny-slider.css' %}" rel="stylesheet">
+	<link href="{% static 'home/css/style.css' %}" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<title>
+		INVO |
+		{% block title %}
+
+		{% endblock %}
+	</title>
+</head>
+
+<body>
+
+	<!-- Start Header/Navigation -->
+	<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
+
+		<div class="container">
+			<a href="{% url 'index' %}"><img src="{% static 'home/images/INVO.png' %}" width="180" alt="" /></a>
+
+			<!-- <a class="navbar-brand" href="index.html">Furni<span>.</span></a> -->
+
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni"
+				aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarsFurni">
+				<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+					<li class="nav-item {% if active_page == 'home' %}active{% endif %}"><a class="nav-link"
+							href="{% url 'index' %}">Home</a></li>
+					<li class="nav-item {% if active_page == 'shop' %}active{% endif %}"><a class="nav-link"
+							href="{% url 'shop' %}">Shop</a></li>
+					<li class="nav-item {% if active_page == 'about' %}active{% endif %}"><a class="nav-link"
+							href="{% url 'index' %}">About us</a></li>
+					<li class="nav-item {% if active_page == 'services' %}active{% endif %}"><a class="nav-link"
+							href="{% url 'index' %}">Services</a></li>
+					<li class="nav-item {% if active_page == 'blog' %}active{% endif %}"><a class="nav-link"
+							href="{% url 'index' %}">Blog</a></li>
+					<li class="nav-item {% if active_page == 'contact' %}active{% endif %}"><a class="nav-link"
+							href="{% url 'index' %}">Contact us</a></li>
+				</ul>
+
+				<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+					{% with is_customer=request.session.customer shopdomain=request.session.current_shopdomain %}
+					{% if is_customer %}
+					<div class="bn-group">
+					<li><a type="button" class="nav-link nav-icon-hover" href="#" id="drop2" data-bs-toggle="dropdown"
+						aria-expanded="false"><span>{{ request.session.customer_name }}</span> 
+						<img src="{% static 'home/images/user.svg' %}"></a>
+						<div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+							<div class="message-body">
+								<a href="#" type="button" class="d-flex align-items-center gap-2 dropdown-item">
+									<i class="fa fa-user"></i>
+									<p class="mb-0">My Profile</p>
+								</a>
+								{% if request.session.current_shopdomain %}
+								<a href="{% url 'myorders' request.session.current_shopdomain %}" type="button" class="d-flex align-items-center gap-2 dropdown-item">
+									<i class="fa-solid fa-box"></i>
+									<p class="mb-0">Orders</p>
+								</a>
+								{% endif %}
+								<a href="#" type="button" class="d-flex align-items-center gap-2 dropdown-item">
+									<i class="fa fa-list-check"></i>
+									<p class="mb-0">My Task</p>
+								</a>
+								<a href="{% url 'customer_logout' %}" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+							</div>
+						</div>
+					</li>
+				</div>
+					
+
+
+						{% if shopdomain %}
+						<li><a class="nav-link" href="{% url 'cart' shopdomain %}"><img
+									src="{% static 'home/images/cart.svg' %}"></a></li>
+						{% endif %}
+						{% else %}
+						{% if not login %}
+						<li><a class="nav-link btn btn-sm btn-secondary p-2" href="{% url 'customer_login' %}"
+								style="color: black;"><i class="fa fa-user" style="font-size:20px"></i> Login</a></li>
+						{% endif %}
+						{% if not register %}
+						<li><a class="nav-link btn btn-sm btn-secondary p-2" href="{% url 'customer_register' %}"
+								style="color: black;"><i class="fa fa-sign-in" style="font-size:20px"></i> Register</a>
+						</li>
+						{% endif %}
+						{% endif %}
+						{% endwith %}
+
+
+				</ul>
+			</div>
+		</div>
+
+	</nav>
+
+	<div class="hero">
+		{% block hero %}
+		{% endblock %}
+	</div>
+
+	{% block content %}
+	{% endblock %}
+
+	<footer class="footer-section">
+		<div class="container relative">
+			<div class="row g-5 mb-5">
+				<div class="col-lg-4">
+					<div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo"><span><img
+									src="{% static 'myshop/images/logos/INVO.png' %}" width="180" alt="" /></span></a>
+					</div>
+					<p class="mb-4">INVO: Revolutionizing local shopping for everyone, from small businesses to farmers.
+						Connect with nearby stores, place online orders, and effortlessly track your purchases. Our
+						AI-powered insights enhance sales predictions. Empowering businesses to showcase their products
+						in multiple languages, INVO brings convenience to your smartphone.</p>
+
+					<ul class="list-unstyled custom-social">
+						<li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
+						<li><a href="#"><span class="fa fa-brands fa-twitter"></span></a></li>
+						<li><a href="#"><span class="fa fa-brands fa-instagram"></span></a></li>
+						<li><a href="#"><span class="fa fa-brands fa-linkedin"></span></a></li>
+					</ul>
+				</div>
+
+				<div class="col-lg-8">
+					<div class="row links-wrap">
+						<div class="col-6 col-sm-6 col-md-4">
+							<ul class="list-unstyled">
+								<li><a href="#">About us</a></li>
+								<li><a href="#">Services</a></li>
+								<li><a href="#">Blog</a></li>
+								<li><a href="#">Contact us</a></li>
+							</ul>
+						</div>
+
+						<div class="col-6 col-sm-6 col-md-4">
+							<ul class="list-unstyled">
+								<li><a href="#">Support</a></li>
+								<li><a href="#">Knowledge base</a></li>
+								<li><a href="#">Live chat</a></li>
+							</ul>
+						</div>
+
+						<div class="col-6 col-sm-6 col-md-4">
+							<ul class="list-unstyled">
+								<li><a href="#">Jobs</a></li>
+								<li><a href="#">Our team</a></li>
+								<li><a href="#">Leadership</a></li>
+								<li><a href="#">Privacy Policy</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="border-top copyright">
+				<div class="row pt-4">
+					<div class="col-lg-6">
+						<p class="mb-2 text-center text-lg-start">Copyright &copy;
+							<script>document.write(new Date().getFullYear());</script>. All Rights Reserved &mdash; INVO
+						</p>
+					</div>
+
+					<div class="col-lg-6 text-center text-lg-end">
+						<ul class="list-unstyled d-inline-flex ms-auto">
+							<li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
+							<li><a href="#">Privacy Policy</a></li>
+						</ul>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+	</footer>
+
+
+	<script src="{% static 'home/js/bootstrap.bundle.min.js' %}"></script>
+	<script src="{% static 'home/js/tiny-slider.js' %}"></script>
+	<script src="{% static 'home/js/custom.js' %}"></script>
+</body>
+
+</html>

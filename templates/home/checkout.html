@@ -1,0 +1,104 @@
+{% extends 'home/ui.html' %}
+{% load static %}
+
+{% block title %}
+Checkout
+{% endblock %}
+
+{% block hero %}
+<div class="container">
+	<div class="row justify-content-between">
+		<div class="col-lg-5">
+			<div class="intro-excerpt">
+				<h1>Checkout</h1>
+			</div>
+		</div>
+		<div class="col-lg-7">
+
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="untree_co-section">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-md-6">
+				<div class="row mb-5">
+					<div class="col-md-12">
+						<h2 class="h3 mb-3 text-black">Your Order</h2>
+						<div class="p-3 p-lg-5 border bg-white">
+							<table class="table site-block-order-table mb-5">
+								<thead>
+									<th>Product</th>
+									<th>Total</th>
+								</thead>
+								<tbody>
+									{% for item in products %}
+									<tr>
+										<td>{{ item.product.name }} <strong class="mx-2">x</strong> {{ item.product_qty }}</td>
+										<td>₹<span class="amt">{{ item.total_cost }}</span></td>
+									</tr>
+									{% endfor %}
+									<tr>
+										<td class="text-black font-weight-bold"><strong>Order Total</strong></td>
+										<td class="text-black font-weight-bold"><strong id="net"></strong></td>
+									</tr>
+
+									<script>
+										const nodes = document.querySelectorAll('.amt');
+										const arr = Array.from(nodes);
+										const res = arr.reduce((acc, curr) => {
+											return acc += Number(curr.textContent)
+										}, 0);
+										document.getElementById("net").innerHTML = "₹ " + res;
+			
+									</script>
+
+								</tbody>
+							</table>
+
+							<div class="border p-3 mb-3">
+								<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsebank"
+										role="button" aria-expanded="false" aria-controls="collapsebank">Direct Bank
+										Transfer</a></h3>
+
+								<div class="collapse" id="collapsebank">
+									<div class="py-2">
+										<p class="mb-0">Make your payment directly into our bank account. Please use
+											your Order ID as the payment reference. Your order won’t be shipped until
+											the funds have cleared in our account.</p>
+									</div>
+								</div>
+							</div>
+
+							<div class="border p-3 mb-5">
+								<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsecop"
+										role="button" aria-expanded="false" aria-controls="collapsecop">Cash on Pick-up/Delivery</a>
+								</h3>
+
+								<div class="collapse" id="collapsecop">
+									<div class="py-2">
+										<p class="mb-0">Make your payment when you get your items. Please use
+											your Order ID as the proof of your order.</p>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<a class="btn btn-black btn-lg py-3 btn-block" href="{% url 'create_order' request.session.current_shopdomain %}">Place Order</a>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!-- </form> -->
+	</div>
+</div>
+
+{% endblock %}

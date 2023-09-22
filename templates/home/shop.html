@@ -1,0 +1,174 @@
+{% extends 'home/ui.html' %}
+{% load static %}
+{% block title %}
+{% if products %}
+{{shopname}}
+{% else %}
+Shop
+{% endif %}
+{% endblock %}
+
+{% block hero %}
+<div class="container">
+	<div class="row justify-content-between">
+		<div class="col-lg-5">
+			<div class="intro-excerpt">
+				<h1>
+					{% if products %}
+					{{shopname}}
+					{% else %}
+					Shop
+					{% endif %}
+				</h1>
+			</div>
+		</div>
+		<div class="col-lg-7">
+
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+{% if address %}
+<div class="untree_co-section product-section before-footer-section">
+	<div class="container">
+		<form action="shop" method="post">
+			{% csrf_token %}
+			<label class="form-label">Select State</label>
+			<select name="state" id="state" class="form-control mb-3">
+				<option>Select a State</option>
+				{% for state in address.keys %}
+				<option value="{{ state }}">{{ state }}</option>
+				{% endfor %}
+			</select>
+
+			<label class="form-label">Select City</label>
+			<select name="city" id="city" class="form-control mb-3">
+				<option value=''>Select a State first</option>
+			</select>
+
+			<div class="d-grid col-sm-2 mx-auto">
+				<input type="submit" value="View Shops" class="btn btn-primary" name="" id="">
+			</div>
+		</form>
+
+		<script>
+			// Get references to the state and city dropdowns
+			var stateDropdown = document.getElementById("state");
+			var cityDropdown = document.getElementById("city");
+			var address = {{ address| safe }};
+			// Add an event listener to the state dropdown to populate the city dropdown
+			stateDropdown.addEventListener("change", function () {
+				var selectedState = stateDropdown.value;
+
+				// Clear the city dropdown
+				cityDropdown.innerHTML = "<option value=''>Select a city</option>";
+
+				// Populate the city dropdown based on the selected state
+				if (selectedState in address) {
+					var cities = address[selectedState];
+					cities.forEach(function (city) {
+						var option = document.createElement("option");
+						option.value = city;
+						option.text = city;
+						cityDropdown.appendChild(option);
+					});
+				}
+			});
+		</script>
+
+	</div>
+</div>
+{% endif %}
+
+{% if shops %}
+
+<div class="untree_co-section product-section before-footer-section">
+	<div class="container">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">Shop Name</th>
+					<th scope="col">Shop address</th>
+					<th scope="col">Go to Shop</th>
+				</tr>
+			</thead>
+			<tbody>
+				<script>
+					var slno = 1;
+				</script>
+				{% for shop in shops %}
+				<tr>
+					<th id="slno{{shop.shop_id}}"></th>
+					<td>{{shop.shop_name}}</td>
+					<td>{{shop.address}}, {{shop.address_city}}, {{shop.address_state}} - {{shop.address_pin}}</td>
+					<td><a class="btn btn-primary btn-sm" href="{% url 'gotoshop' shopdomain=shop.shop_domain %}">Go</a>
+					</td>
+				</tr>
+				<script>
+					document.getElementById('slno{{shop.shop_id}}').innerHTML = slno;
+					slno++;
+				</script>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{% endif %}
+
+
+{% if products %}
+<div class="untree_co-section product-section before-footer-section">
+	<div class="container">
+		<div class="row">
+
+			{% for product in products %}
+			<div class="col-12 col-md-4 col-lg-3 mb-5">
+				<div class="product-item" href="#">
+					<img src="{{ product.product_image.url }}" alt="..." class="img-fluid product-thumbnail">
+					<h3 class="product-title">{{ product.name }}</h3>
+					<strong class="product-price">₹ {{ product.selling_price }}</strong>
+
+					<button id="addtocart{{ product.product_id }}" class="icon-cross">
+						<img src="{% static 'home/images/cross.svg' %}" class="img-fluid">
+					</button>
+				</div>
+			</div>
+
+			<script>
+
+				document.getElementById('addtocart{{ product.product_id }}').addEventListener("click", function () {
+					
+						let postObj = {
+							'pid': {{ product.product_id }}
+						}
+						console.log("working fetch");						
+						fetch("{% url 'addtocart' request.session.current_shopdomain %}", {
+							method: 'POST',
+							credentials: 'same-origin',
+							headers: {
+								'Accept': 'application/json',
+								'X-Requested-With': 'XMLHttpRequest',
+								'X-CSRFToken': '{{ csrf_token }}',
+							},
+							body: JSON.stringify(postObj)
+						}).then(response => {
+							return response.json();
+						}).then(data => {
+							alert(data['status']);
+						});
+				});
+			</script>
+
+			{% endfor %}
+
+
+		</div>
+	</div>
+</div>
+{% endif %}
+{% endblock %}

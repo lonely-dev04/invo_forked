@@ -1,0 +1,276 @@
+{% extends 'myshop/ui.html' %}
+{% load static %}
+
+{% block title %}
+| Billing
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <h5 class="card-title fw-semibold mb-4">Billing</h5>
+    <div class="card">
+        <div class="card-body">
+            {% include 'inc/message.html' %}
+            <form action="create_bill" method="post" id="invoice-form">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="mb-3 col-sm-9">
+                                <label class="form-label">Customer Name</label>
+                                <select class="form-select" id="customer" name="customer" data-mdb-select2="true">
+                                    {% for customer in customers %}
+                                    <option value="{{ customer.customer_id }}">{{ customer.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="form-text">Click "Add" to add new customers</div>
+                                <div class="form-text">Select 'Cash Sale to proceed without Name</div>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <a href="{% url 'addcustomer' shopdomain=request.session.shopdomain %}" class="btn btn-primary" style="margin-top: 29px;">+ Add</a>
+                            </div>
+                        </div>
+
+                        <!-- <div class="mb-3">
+                            <label class="form-label">Customer Mobile</label>
+                            <input type="text" class="form-control" name="phone" id="customerphone"
+                                placeholder="Customer Mobile Number">
+                        </div> -->
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" id="today" name="date" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Time</label>
+                            <input type="time" id="timenow" name="time" onload="autofillTime()" step="2"
+                                class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row row-cols-auto justify-content-center">
+                    <div class="mb-3 col-md-6">
+                        <label class="form-label">Products</label>
+                        <div class="input-group">
+                            <select class="form-select" id="productselect" name="productselect" data-mdb-select2="true">
+                                {% for product in products %}
+                                <option value="{{ product.product_id }}" price="{{ product.selling_price }}"
+                                    product-name="{{ product.name }}">
+                                    {{ product.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <span class="input-group-text" style="color: black; background-color: rgb(180, 221, 235);"
+                                id="productprice" name="productprice">
+
+                            </span>
+                            <script>
+                                const productSelect = document.getElementById('productselect');
+                                const selectedOption = productSelect.options[productSelect.selectedIndex];
+                                price = selectedOption.getAttribute('price');
+                                document.getElementById("productprice").innerHTML = "₹" + price;
+                                productSelect.addEventListener('change', (event) => {
+                                    const productSelect = document.getElementById('productselect');
+                                    const selectedOption = productSelect.options[productSelect.selectedIndex];
+                                    price = selectedOption.getAttribute('price');
+                                    document.getElementById("productprice").innerHTML = "₹" + price;
+                                });
+
+
+                            </script>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 col">
+                        <label class="form-label">Quantity</label>
+                        <div class="input-group" style="min-width: 140px; max-width: 150px;">
+                            <div class="input-group-prepend">
+                                <a class="btn btn-outline-dark" id="quantity-minus" onclick="decreaseValue()"
+                                    style="border-radius: 0; border-top-left-radius: 15px; border-bottom-left-radius: 15px; height: 40px;">-</a>
+                            </div>
+                            <input type="text" class="form-control text-center border border-dark" id="quantity"
+                                name="quantity" style=" height: 40px;" value="0">
+                            <div class="input-group-append">
+                                <a class="btn btn-outline-dark" id="quantity-plus" onclick="increaseValue()"
+                                    style="border-radius: 0; border-top-right-radius: 15px; border-bottom-right-radius: 15px; height: 40px;">+</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 col">
+                        <a class="btn btn-outline-primary form-control" id="addnewproduct" onclick="addProduct()"
+                            style="margin-top: 32px;">
+                            <i class="ti ti-plus"></i> Add Product
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row table-responsive">
+                    <label class="form-label">Products Added</label>
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">Sl No.</th>
+                                <th scope="col">Product</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Price(₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="product-list" name="product-list">
+                        </tbody>
+                        <tbody class="table-secondary">
+                            <th scope="col" colspan="3">Total</th>
+                            <th scope="col" id="bill-total">0</th>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mb-3 form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="billpaid" value="1" checked>
+                    <label class="form-check-label" for="billpaid">Bill Paid</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Invoice</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let productCounter = 1;
+    var bill_total = 0;
+    const productDetailsArray = [];
+    document.querySelector("#today").valueAsDate = new Date();
+
+    var t = document.getElementById("timenow");
+    setInterval(function () {
+        var currentTime = new Date();
+        var hours = ("0" + currentTime.getHours().toString()).slice(-2);
+        var minutes = ("0" + currentTime.getMinutes().toString()).slice(-2);
+        var seconds = ("0" + currentTime.getSeconds().toString()).slice(-2);
+        t.value = hours + ":" + minutes + ":" + seconds;
+    }, 1000);
+
+    function increaseValue() {
+        var value = document.getElementById("quantity").value;
+        value++;
+        document.getElementById("quantity").value = value;
+    }
+
+    function decreaseValue() {
+        var value = document.getElementById("quantity").value;
+        value--;
+        document.getElementById("quantity").value = value;
+    }
+
+
+    function addProduct() {
+        const productSelect = document.getElementById('productselect');
+        const selectedOption = productSelect.options[productSelect.selectedIndex];
+        const productName = selectedOption.getAttribute('product-name');
+
+        const product = document.getElementById('productselect').value;
+
+        const quantity = parseInt(document.getElementById('quantity').value);
+        const productPrice = parseFloat(document.getElementById('productprice').textContent.replace(/[^0-9.]/g, '')); // Extract numeric price
+
+        console.log(quantity + 1);
+        if (quantity > 0) {
+            const total = quantity * productPrice;
+            const productRow = `
+            <tr>
+                <td>${productCounter}</td>
+                <td name="prodnm">${productName}</td>
+                <td name="quan">${quantity}</td>
+                <td name="totalprice">${total.toFixed(2)}</td>
+            </tr>
+            `;
+
+            productDetailsArray.push({
+                product: product,
+                quantity: quantity,
+                price: productPrice,
+                total: total
+            });
+
+            console.log("working")
+
+
+            // Append the new product row to the table
+            const productList = document.getElementById('product-list');
+            productList.innerHTML += productRow;
+
+            // Increment the product counter
+            productCounter++;
+
+            // Clear the input fields and reset quantity to 0
+            document.getElementById('quantity').value = '0';
+
+            // You can optionally update the total at the bottom of the table here
+            var bill_total_ele = document.getElementById("bill-total");
+            console.log(bill_total);
+            bill_total += total;
+            bill_total_ele.innerHTML = bill_total.toFixed(2);
+
+        } else {
+            alert('Please select a product and enter a valid quantity.');
+        }
+    }
+
+    const form = document.querySelector('#invoice-form');
+
+    // Add an event listener to the form's submit event
+    form.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+        var paid = 0;
+        const customer = document.getElementById('customer').value;
+        const billpaid = document.getElementById('billpaid');
+
+        if (billpaid.checked){
+            paid = 1;
+        }
+        // Create an object to hold all the data
+        const dataToSend = {
+            customer: customer,
+            productDetails: productDetailsArray,
+            billpaid: paid,
+        };
+
+        console.log(dataToSend);
+
+        // Send the data to the server using an AJAX fetch request
+        fetch('create_bill', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dataToSend)
+        })
+
+            .then(response => {
+                if (response.redirected) {
+                    // Handle the redirect URL
+                    window.location.href = response.url;
+                } else {
+                    // Handle other responses if needed
+                    // For example, display a success message or update the page
+                }
+            })
+
+            .then(response => response.json())
+            .then(data => {
+                // Handle the server's response data (if needed)
+                console.log(data);
+            })
+            .catch(error => {
+                // Handle errors, e.g., network issues or server errors
+                console.error('Error:', error);
+            });
+    });
+
+
+
+</script>
+{% endblock %}
