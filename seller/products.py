@@ -26,3 +26,9 @@ def add_product(request,shopdomain):
     product = Product(name = name, description = description, original_price = original_price, selling_price = selling_price, quantity = quantity, product_image = product_image, shop_id = shop)
     product.save()
     return redirect('addproducts',shopdomain = shopdomain)
+
+def delete_product(request,shopdomain,pid):
+    shop_id = request.session['shop']
+    product = Product.objects.get(product_id = pid, shop_id = shop_id)
+    product.delete()
+    return redirect('products', shopdomain=shopdomain)

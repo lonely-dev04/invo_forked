@@ -16,4 +16,5 @@ urlpatterns = [
     path('add_product',products.add_product,name='add_product'),
     path('add_customer',customers.addcustomer,name='add_customer'),
     path('create_bill',billing.create_bill,name='create_bill'),
+    path('delete_product/<str:pid>',products.delete_product, name='delete_product'),
 ]
