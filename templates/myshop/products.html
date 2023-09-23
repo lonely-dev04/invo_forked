@@ -43,7 +43,7 @@
                                     data-bs-target="#{{ x.product_id }}edit">
                                     <i class="ti ti-edit"></i> Edit
                                 </a>
-                                <a href="#" class="btn btn-danger col">
+                                <a href="{% url 'delete_product' request.session.shopdomain x.product_id %}" class="btn btn-danger col">
                                     <i class="ti ti-trash"></i> Remove
                                 </a>
                             </div>
