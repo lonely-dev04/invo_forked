@@ -12,34 +12,37 @@
         <div class="card-body">
             <div class="row">
                 <h5 class="card-title fw-semibold mb-4">Orders</h5>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Order ID</th>
-                            <th>Customer</th>
-                            <th>Address</th>
-                            <th>Order Value</th>
-                            <th>Payment Status</th>
-                            <th>Completed</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for order in orders %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ order.order_id }}</td>
-                            <td>{{ order.customer.name }}</td>
-                            <td>{{ order.shipping_address }}</td>
-                            <td>{{ order.order_value }}</td>
-                            <td>{% if order.paid %}Paid{% else %}Unpaid{% endif %}</td>
-                            <td>
-                                <a href="{% url 'order_completed' request.session.shopdomain order.order_id %}" class="btn btn-primary btn-sm">Done</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="row table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Address</th>
+                                <th>Order Value</th>
+                                <th>Payment Status</th>
+                                <th>Completed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ order.order_id }}</td>
+                                <td>{{ order.customer.name }}</td>
+                                <td>{{ order.shipping_address }}</td>
+                                <td>{{ order.order_value }}</td>
+                                <td>{% if order.paid %}Paid{% else %}Unpaid{% endif %}</td>
+                                <td>
+                                    <a href="{% url 'order_completed' request.session.shopdomain order.order_id %}"
+                                        class="btn btn-primary btn-sm">Done</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
