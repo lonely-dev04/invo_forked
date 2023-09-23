@@ -24,8 +24,7 @@
         },
         {
             "src": "/(.*)",
-            "dest": "myweb/wsgi.py"
+            "dest": "invo/wsgi.py"
         }
     ]
 }
-
