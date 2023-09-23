@@ -26,7 +26,7 @@ def create_bill(request,shopdomain):
         total = product_data.get('total')
         bill_total+=total
     address = str(customer.address)+","+str(customer.address_city)+","+str(customer.address_state)+"-"+str(customer.address_pin)
-    order = Order(customer = customer, shop_id = shop, order_value = bill_total, shipping_address = address, paid = billpaid, order_mode = 0)
+    order = Order(customer = customer, shop_id = shop, order_value = bill_total, shipping_address = address, paid = billpaid, order_mode = 0,completed = 0)
     order.save()
 
     for product_data in product_details:

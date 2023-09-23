@@ -122,7 +122,7 @@ def create_order(request, shopdomain):
 
 
     address = str(customer.address)+","+str(customer.address_city)+","+str(customer.address_state)+"-"+str(customer.address_pin)
-    order = Order(customer = customer, shop_id = shop, order_value = order_value, shipping_address = address, paid = paid, order_mode = 1)
+    order = Order(customer = customer, shop_id = shop, order_value = order_value, shipping_address = address, paid = paid, order_mode = 1,completed = 0)
     order.save()
     for item in items:
         prod = item.product

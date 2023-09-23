@@ -31,6 +31,7 @@ class Order(models.Model):
     shipping_address = models.TextField()
     paid = models.BooleanField(default=True,help_text="0-unpaid 1-paid")
     order_mode = models.BooleanField(help_text="0-offline 1-online")
+    completed = models.BooleanField(help_text='0-pending, 1-completed')
 
 class OrderDetails(models.Model):
     id = models.AutoField(primary_key=True,default=None)

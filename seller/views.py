@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
-from .models import Product
-from users.models import Customer
+from .models import Product,Order,OrderDetails
+from users.models import Customer,Shop
 
 def dashboard(request,shopdomain):
     if 'shop' in request.session:
@@ -51,11 +51,17 @@ def sales(request,shopdomain):
 
 def orders(request,shopdomain):
     if 'shop' in request.session:
-        return render(request,'myshop/orders.html')
+        shop_id = request.session['shop']
+        orders = Order.objects.filter(shop_id = shop_id, order_mode=1, completed = 0)
+        return render(request,'myshop/orders.html',{'orders':orders})
     else:
         return redirect('login')
-
-def test(request,shopdomain):
-    prods = Product.objects.all().values()
-
-    return render(request,'myshop/test.html',{'products':prods})
+    
+def order_completed(request,shopdomain,oid):
+    if 'shop' in request.session:
+        order = Order.objects.get(order_id = oid)
+        order.completed = 1
+        order.save()
+        return redirect('orders',shopdomain = shopdomain)
+    else:
+        return redirect('login')
