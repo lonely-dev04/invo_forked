@@ -33,6 +33,7 @@ Checkout
                     <th scope="col">Order address</th>
                     <th scope="col">Payment Status</th>
                     <th scope="col">Order Mode</th>
+                    <th scope="col">Order Status</th>
                     <th scope="col">View Order</th>
                 </tr>
             </thead>
@@ -46,6 +47,7 @@ Checkout
                     <td>{{ order.shipping_address }}</td>
                     <td>{% if order.paid %}Paid{% else %}Unpaid{% endif %}</td>
                     <td>{% if order.order_mode %}Online{% else %}Offline{% endif %}</td>
+                    <td>{% if order.completed %}Completed{% else %}Pending{% endif %}</td>
                     <td><a class="btn btn-primary btn-sm" href="" data-bs-toggle="modal"
                             data-bs-target="#showorder{{order.order_id}}">View</a></td>
                 </tr>
