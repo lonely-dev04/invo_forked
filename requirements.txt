@@ -1,8 +1,6 @@
 asgiref==3.7.2
 django==4.2.4
-pkg-config==0.29
-mysqlclient==2.2.0
 Pillow==10.0.0
-psycopg2==2.9.7
+psycopg2-binary==2.9.6
 sqlparse==0.4.4
 tzdata==2023.3
