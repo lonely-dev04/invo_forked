@@ -34,11 +34,12 @@ Shop
 {% if address %}
 <div class="untree_co-section product-section before-footer-section">
 	<div class="container">
-		<form action="shop" method="post">
+		{% include 'inc/message.html' %}
+		<form action="{% url 'shop' %}" method="post">
 			{% csrf_token %}
 			<label class="form-label">Select State</label>
 			<select name="state" id="state" class="form-control mb-3">
-				<option>Select a State</option>
+				<option value="0">Select a State</option>
 				{% for state in address.keys %}
 				<option value="{{ state }}">{{ state }}</option>
 				{% endfor %}
@@ -46,7 +47,7 @@ Shop
 
 			<label class="form-label">Select City</label>
 			<select name="city" id="city" class="form-control mb-3">
-				<option value=''>Select a State first</option>
+				<option value='0'>Select a State first</option>
 			</select>
 
 			<div class="d-grid col-sm-2 mx-auto">
@@ -64,7 +65,7 @@ Shop
 				var selectedState = stateDropdown.value;
 
 				// Clear the city dropdown
-				cityDropdown.innerHTML = "<option value=''>Select a city</option>";
+				cityDropdown.innerHTML = "<option value='0'>Select a city</option>";
 
 				// Populate the city dropdown based on the selected state
 				if (selectedState in address) {

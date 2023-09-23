@@ -48,10 +48,14 @@
 							href="{% url 'shop' %}">Shop</a></li>
 					<li class="nav-item {% if active_page == 'about' %}active{% endif %}"><a class="nav-link"
 							href="{% url 'index' %}">About us</a></li>
-					<li class="nav-item {% if active_page == 'services' %}active{% endif %}"><a class="nav-link"
-							href="{% url 'index' %}">Services</a></li>
-					<li class="nav-item {% if active_page == 'blog' %}active{% endif %}"><a class="nav-link"
-							href="{% url 'index' %}">Blog</a></li>
+					{% if request.session.current_shopdomain %}
+					<li class="nav-item {% if orderdetails %}active{% endif %}"><a class="nav-link"
+							href="{% url 'myorders' request.session.current_shopdomain %}">My Orders</a></li>
+					{% endif %}
+					<!-- <li class="nav-item {% if active_page == 'services' %}active{% endif %}"><a class="nav-link"
+							href="{% url 'index' %}">Services</a></li> -->
+					<!-- <li class="nav-item {% if active_page == 'blog' %}active{% endif %}"><a class="nav-link"
+							href="{% url 'index' %}">Blog</a></li> -->
 					<li class="nav-item {% if active_page == 'contact' %}active{% endif %}"><a class="nav-link"
 							href="{% url 'index' %}">Contact us</a></li>
 				</ul>
@@ -60,49 +64,58 @@
 					{% with is_customer=request.session.customer shopdomain=request.session.current_shopdomain %}
 					{% if is_customer %}
 					<div class="bn-group">
-					<li><a type="button" class="nav-link nav-icon-hover" href="#" id="drop2" data-bs-toggle="dropdown"
-						aria-expanded="false"><span>{{ request.session.customer_name }}</span> 
-						<img src="{% static 'home/images/user.svg' %}"></a>
-						<div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
-							<div class="message-body">
-								<a href="#" type="button" class="d-flex align-items-center gap-2 dropdown-item">
-									<i class="fa fa-user"></i>
-									<p class="mb-0">My Profile</p>
-								</a>
-								{% if request.session.current_shopdomain %}
-								<a href="{% url 'myorders' request.session.current_shopdomain %}" type="button" class="d-flex align-items-center gap-2 dropdown-item">
-									<i class="fa-solid fa-box"></i>
-									<p class="mb-0">Orders</p>
-								</a>
-								{% endif %}
-								<a href="#" type="button" class="d-flex align-items-center gap-2 dropdown-item">
-									<i class="fa fa-list-check"></i>
-									<p class="mb-0">My Task</p>
-								</a>
-								<a href="{% url 'customer_logout' %}" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+						<li><a type="button" class="nav-link nav-icon-hover" href="#" id="drop2"
+								data-bs-toggle="dropdown" aria-expanded="false">
+								<span>
+									{{ request.session.customer_name }}
+								</span>
+								<img src="{% static 'home/images/user.svg' %}"></a>
+							<div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up"
+								aria-labelledby="drop2">
+								<div class="message-body">
+									<a href="#" type="button" class="d-flex align-items-center gap-2 dropdown-item">
+										<i class="fa fa-user"></i>
+										<p class="mb-0">My Profile</p>
+									</a>
+									{% if request.session.current_shopdomain %}
+									<a href="{% url 'myorders' request.session.current_shopdomain %}" type="button"
+										class="d-flex align-items-center gap-2 dropdown-item">
+										<i class="fa-solid fa-box"></i>
+										<p class="mb-0">Orders</p>
+									</a>
+									{% endif %}
+									<a href="#" type="button" class="d-flex align-items-center gap-2 dropdown-item">
+										<i class="fa fa-list-check"></i>
+										<p class="mb-0">My Task</p>
+									</a>
+									<a href="{% url 'customer_logout' %}"
+										class="btn btn-outline-primary mx-3 mt-2 d-block">
+										<i class="fa fa-sign-out"></i>
+										Logout
+									</a>
+								</div>
 							</div>
-						</div>
-					</li>
-				</div>
-					
-
-
-						{% if shopdomain %}
-						<li><a class="nav-link" href="{% url 'cart' shopdomain %}"><img
-									src="{% static 'home/images/cart.svg' %}"></a></li>
-						{% endif %}
-						{% else %}
-						{% if not login %}
-						<li><a class="nav-link btn btn-sm btn-secondary p-2" href="{% url 'customer_login' %}"
-								style="color: black;"><i class="fa fa-user" style="font-size:20px"></i> Login</a></li>
-						{% endif %}
-						{% if not register %}
-						<li><a class="nav-link btn btn-sm btn-secondary p-2" href="{% url 'customer_register' %}"
-								style="color: black;"><i class="fa fa-sign-in" style="font-size:20px"></i> Register</a>
 						</li>
-						{% endif %}
-						{% endif %}
-						{% endwith %}
+					</div>
+
+
+
+					{% if shopdomain %}
+					<li><a class="nav-link" href="{% url 'cart' shopdomain %}"><img
+								src="{% static 'home/images/cart.svg' %}"></a></li>
+					{% endif %}
+					{% else %}
+					{% if not login %}
+					<li><a class="nav-link btn btn-sm btn-secondary p-2" href="{% url 'customer_login' %}"
+							style="color: black;"><i class="fa fa-user" style="font-size:20px"></i> Login</a></li>
+					{% endif %}
+					{% if not register %}
+					<li><a class="nav-link btn btn-sm btn-secondary p-2" href="{% url 'customer_register' %}"
+							style="color: black;"><i class="fa fa-sign-in" style="font-size:20px"></i> Register</a>
+					</li>
+					{% endif %}
+					{% endif %}
+					{% endwith %}
 
 
 				</ul>

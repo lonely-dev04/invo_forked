@@ -4,6 +4,7 @@ from users.models import Shop, Customer
 from seller.models import Product,Order,OrderDetails
 from . models import Cart
 import json
+from django.contrib import messages
 
 # Create your views here.
 def ui(request):
@@ -16,8 +17,12 @@ def shop(request):
     if request.method == 'POST':
         state = request.POST['state']
         city = request.POST['city']
-        shops = Shop.objects.filter(address_city=city,address_state=state)
-        return render(request,'home/shop.html',{'active_page': 'shop','shops':shops})
+        if state != '0' and city != '0':
+            shops = Shop.objects.filter(address_city=city,address_state=state)
+            return render(request,'home/shop.html',{'active_page': 'shop','shops':shops})
+        else:
+            messages.warning(request,'Select your State and City')
+        
 
     address_data = Shop.objects.values('address_state', 'address_city')
     address_dict = {}
@@ -48,6 +53,15 @@ def gotoshop(request, shopdomain):
 
 def cart(request, shopdomain):
     shop = Shop.objects.filter(shop_domain = shopdomain).first()
+    if request.method == 'POST':
+        print("post executes")
+        customer_id = request.session['customer']
+        customer = Customer.objects.get(customer_id = customer_id)
+        items = Cart.objects.filter(shop = shop, customer = customer)
+        for item in items:
+            name = 'qty'+str(item.id)
+            item.product_qty = int(request.POST[name])
+            item.save()
     if shop is not None:
         if 'customer' not in request.session:
             return redirect('customer_login')
@@ -61,6 +75,8 @@ def cart(request, shopdomain):
         return render(request, 'home/cart.html',{'products': items})
     else:
         return redirect('shop')
+    
+    
     
 def checkout(request, shopdomain):
     if 'current_shop' in request.session:

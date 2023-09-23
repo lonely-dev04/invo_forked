@@ -78,7 +78,7 @@ def customer_login(request):
             
             if user is not None:
                 request.session['customer'] = user.customer_id
-                request.session['customer_name'] = user.name
+                request.session['customer_name'] = user.name.split()[0]
                 return redirect("index")
             else:
                 messages.warning(request,'Wrong email or password')
