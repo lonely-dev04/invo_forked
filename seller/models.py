@@ -15,7 +15,7 @@ class Product(models.Model):
     original_price = models.DecimalField(max_digits=10, decimal_places=2)
     selling_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
-    product_image = models.ImageField(upload_to=getFileName)
+    product_image = models.FileField(upload_to=getFileName)
     shop_id = models.ForeignKey(Shop,on_delete=models.CASCADE)
     status = models.BooleanField(default=False,help_text="0-Show,1-Hidden")
     created_at = models.DateTimeField(auto_now_add=True)
