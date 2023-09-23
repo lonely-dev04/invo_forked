@@ -38,10 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'dbstorage',
     'seller',
     'users',
     'home',
 ]
+
+DEFAULT_FILE_STORAGE = 'dbstorage.storage.DBStorage'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
