@@ -5,7 +5,7 @@ from users.models import Shop,Customer
 
 def getFileName(requset,filename):
     filename = filename.replace(" ","");  
-    now_time=datetime.datetime.now().strftime("%Y%m%d%H:%M:%S")
+    now_time=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     new_filename="%s%s"%(now_time,filename)
     return os.path.join('product_images/',new_filename)
 
