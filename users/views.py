@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from . models import Shop,Customer
 from django.contrib import messages
 from django.db import IntegrityError
-
+from django.utils import timezone
 
 
 def shop_login(request):
@@ -18,6 +18,7 @@ def shop_login(request):
                 request.session['shop'] = user.shop_id
                 request.session['owner_name'] = user.owner_name
                 request.session['shopdomain'] = user.shop_domain
+                user.last_login = timezone.now()
                 messages.success(request, 'Successfully logged in.')
                 response = redirect("dashboard", shopdomain = request.session['shopdomain'])
                 return response
