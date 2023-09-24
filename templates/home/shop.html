@@ -171,5 +171,12 @@ Shop
 		</div>
 	</div>
 </div>
+{% else %}
+<div class="text-center">
+	<div class="mb-5">
+	<h2>Shop doesn't have any products</h2>
+	</div>
+	<a href="{% url 'shop' %}" class="btn btn-primary ">Find Shops nearer you</a>
+</div>
 {% endif %}
 {% endblock %}
