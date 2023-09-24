@@ -37,6 +37,8 @@ def shop_register(request):
             email = request.POST['email']
             password = request.POST['password']
             shop_domain = request.POST['domain']
+            shop_domain = shop_domain.replace(" ","")
+            shop_domain = shop_domain.replace("invo.in/","")
             phone = request.POST['phone']
             address = request.POST['address']
             address_city = request.POST['address_city']
