@@ -143,25 +143,26 @@ Shop
 			<script>
 
 				document.getElementById('addtocart{{ product.product_id }}').addEventListener("click", function () {
-					
-						let postObj = {
-							'pid': {{ product.product_id }}
+
+					let postObj = {
+						'pid': {{ product.product_id }
+				}
 						}
-						console.log("working fetch");						
-						fetch("{% url 'addtocart' request.session.current_shopdomain %}", {
-							method: 'POST',
-							credentials: 'same-origin',
-							headers: {
-								'Accept': 'application/json',
-								'X-Requested-With': 'XMLHttpRequest',
-								'X-CSRFToken': '{{ csrf_token }}',
-							},
-							body: JSON.stringify(postObj)
-						}).then(response => {
-							return response.json();
-						}).then(data => {
-							alert(data['status']);
-						});
+					console.log("working fetch");
+				fetch("{% url 'addtocart' request.session.current_shopdomain %}", {
+					method: 'POST',
+					credentials: 'same-origin',
+					headers: {
+						'Accept': 'application/json',
+						'X-Requested-With': 'XMLHttpRequest',
+						'X-CSRFToken': '{{ csrf_token }}',
+					},
+					body: JSON.stringify(postObj)
+				}).then(response => {
+					return response.json();
+				}).then(data => {
+					alert(data['status']);
+				});
 				});
 			</script>
 
@@ -172,11 +173,15 @@ Shop
 	</div>
 </div>
 {% else %}
-<div class="text-center">
-	<div class="mb-5">
-	<h2>Shop doesn't have any products</h2>
+<div class="untree_co-section product-section before-footer-section">
+	<div class="container">
+		<div class="text-center">
+			<div class="mb-5">
+				<h2>Shop doesn't have any products</h2>
+			</div>
+			<a href="{% url 'shop' %}" class="btn btn-primary ">Find Shops nearer you</a>
+		</div>
 	</div>
-	<a href="{% url 'shop' %}" class="btn btn-primary ">Find Shops nearer you</a>
 </div>
 {% endif %}
 {% endblock %}
