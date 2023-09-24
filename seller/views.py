@@ -53,7 +53,14 @@ def orders(request,shopdomain):
     if 'shop' in request.session:
         shop_id = request.session['shop']
         orders = Order.objects.filter(shop_id = shop_id, order_mode=1, completed = 0)
-        return render(request,'myshop/orders.html',{'orders':orders})
+        
+        orderdetails = []
+
+        for order in orders:
+            order_details = OrderDetails.objects.filter(order=order)
+            orderdetails.append({'order': order, 'details': order_details})
+
+        return render(request, 'myshop/orders.html', {'orderdetails': orderdetails})
     else:
         return redirect('login')
     
