@@ -125,7 +125,7 @@ def addtocart(request,shopdomain):
 def remove_cart(request,cid):
     cartitem=Cart.objects.get(id=cid)
     cartitem.delete()
-    return redirect("cart",shopdomain = request.session['current_shopdoomain'])
+    return redirect("cart",shopdomain = request.session['current_shopdomain'])
 
 def create_order(request, shopdomain):
     shop = Shop.objects.filter(shop_domain = shopdomain).first()
