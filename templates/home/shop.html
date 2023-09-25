@@ -145,9 +145,8 @@ Shop
 				document.getElementById('addtocart{{ product.product_id }}').addEventListener("click", function () {
 
 					let postObj = {
-						'pid': {{ product.product_id }
-				}
-						}
+						'pid': {{ product.product_id }},
+					}
 					console.log("working fetch");
 				fetch("{% url 'addtocart' request.session.current_shopdomain %}", {
 					method: 'POST',
