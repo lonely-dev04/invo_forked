@@ -34,11 +34,14 @@ def create_bill(request,shopdomain):
         quantity = product_data.get('quantity')
         price = product_data.get('price')
         total = product_data.get('total')
-
         prod = Product.objects.get(product_id = product)
-
+        qty = prod.quantity
+        qty -= quantity
+        prod.quantity = qty
+        prod.save()
         orderdetails = OrderDetails(order = order, product = prod, quantity = quantity, price = price, total_price = total)
         orderdetails.save()
+
     messages.success(request, 'Bill created Successfully')
 
     return redirect('billing',shopdomain = request.session['shopdomain'])
