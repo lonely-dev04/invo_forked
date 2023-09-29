@@ -45,7 +45,16 @@ def billing(request,shopdomain):
 
 def sales(request,shopdomain):
     if 'shop' in request.session:
-        return render(request,'myshop/sales.html')
+        shop_id = request.session['shop']
+        orders = Order.objects.filter(shop_id = shop_id, order_mode=0)
+        
+        orderdetails = []
+
+        for order in orders:
+            order_details = OrderDetails.objects.filter(order=order)
+            orderdetails.append({'order': order, 'details': order_details})
+
+        return render(request, 'myshop/sales.html', {'orderdetails': orderdetails})
     else:
         return redirect('login')
 

@@ -172,6 +172,7 @@ Shop
 	</div>
 </div>
 {% else %}
+{% if not address and not shops %}
 <div class="untree_co-section product-section before-footer-section">
 	<div class="container">
 		<div class="text-center">
@@ -182,5 +183,6 @@ Shop
 		</div>
 	</div>
 </div>
+{% endif %}
 {% endif %}
 {% endblock %}

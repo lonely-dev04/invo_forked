@@ -50,7 +50,9 @@ def shop_register(request):
 
             new_shop = Shop(shop_name = shop_name, owner_name = owner_name, email = email, password = make_password(password), shop_domain = shop_domain, phone = phone, address = address, address_city = address_city, address_state = address_state, address_pin = address_pin)
             new_shop.save()
-            cash_sale = Customer(name = "Cash Sale",email = "cashsale."+shop_domain+"@invo.in", password = "cashsale@invo", shop_id = new_shop)
+            cash_sale = Customer(name = "Cash Sale",email = "cashsale."+shop_domain+"@invo.in", password = make_password("cashsale@invo"))
+            cash_sale.save()
+            cash_sale.shop_id.add(new_shop)
             cash_sale.save()
             messages.success(request, 'Registration success. You can login in now')
             return redirect('login')

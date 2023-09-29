@@ -2,11 +2,99 @@
 {% load static %}
 
 {% block title %}
- | Sales information
+| Sales information
 {% endblock %}
 
 {% block content %}
 
-<h1>sales information page</h1>
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+
+            <div class="row">
+                <h5 class="card-title fw-semibold mb-4">Offline Sales</h5>
+                <div class="row table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Address</th>
+                                <th>Order Value</th>
+                                <th>Payment Status</th>
+                                <th>View Order</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for orderdetail in orderdetails %}
+                            {% with order=orderdetail.order %}
+                            {% if order.completed == 0 %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ order.order_id }}</td>
+                                <td>{{ order.customer.name }}</td>
+                                <td>{{ order.shipping_address }}</td>
+                                <td>{{ order.order_value }}</td>
+                                <td>{% if order.paid %}Paid{% else %}
+                                    <a class="btn btn-primary btn-sm" href="">Paid</a>
+                                    {% endif %}</td>
+                                <td><a class="btn btn-primary btn-sm" href="" data-bs-toggle="modal"
+                                        data-bs-target="#showorder{{order.order_id}}">View</a></td>
+                            </tr>
+                            {% endif %}
+                            {% endwith %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% for orderdetail in orderdetails %}
+        <div class="modal fade" id="showorder{{orderdetail.order.order_id}}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Order Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Rate</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for od in orderdetail.details %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ od.product.name }}</td>
+                                    <td>{{ od.price }}</td>
+                                    <td>{{ od.quantity }}</td>
+                                    <td>{{ od.total_price }}</td>
+                                </tr>
+                                {% endfor %}
+                                <tr>
+                                    <th colspan="4">Total</th>
+                                    <th>{{orderdetail.order.order_value}}</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                            </div> -->
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
 {% endblock %}

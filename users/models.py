@@ -26,4 +26,7 @@ class Customer(models.Model):
     address_state = models.CharField(max_length=50)
     address_pin = models.IntegerField(null=True)
     joined_in = models.DateTimeField(auto_now_add=True)
-    shop_id = models.ForeignKey(Shop,on_delete=models.CASCADE,null=True,blank=True)
+    shop_id = models.ManyToManyField(Shop, related_name='customers', blank=True)
+
+    def __str__(self):
+        return self.name
