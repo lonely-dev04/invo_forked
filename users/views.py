@@ -3,6 +3,8 @@ from . models import Shop,Customer
 from django.contrib import messages
 from django.db import IntegrityError
 from django.utils import timezone
+from django.contrib.auth.hashers import check_password, make_password
+
 
 
 def shop_login(request):
@@ -12,9 +14,9 @@ def shop_login(request):
             email = request.POST['email']
             password = request.POST['password']
 
-            user = Shop.objects.filter(email=email, password=password).first()
+            user = Shop.objects.filter(email=email).first()
             
-            if user is not None:
+            if user is not None and check_password(password, user.password):
                 request.session['shop'] = user.shop_id
                 request.session['owner_name'] = user.owner_name
                 request.session['shopdomain'] = user.shop_domain
@@ -46,7 +48,7 @@ def shop_register(request):
             address_state = request.POST['address_state']
             address_pin = request.POST['address_pin']
 
-            new_shop = Shop(shop_name = shop_name, owner_name = owner_name, email = email, password = password, shop_domain = shop_domain, phone = phone, address = address, address_city = address_city, address_state = address_state, address_pin = address_pin)
+            new_shop = Shop(shop_name = shop_name, owner_name = owner_name, email = email, password = make_password(password), shop_domain = shop_domain, phone = phone, address = address, address_city = address_city, address_state = address_state, address_pin = address_pin)
             new_shop.save()
             cash_sale = Customer(name = "Cash Sale",email = "cashsale."+shop_domain+"@invo.in", password = "cashsale@invo", shop_id = new_shop)
             cash_sale.save()
