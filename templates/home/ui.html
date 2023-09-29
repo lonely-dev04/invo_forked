@@ -48,8 +48,8 @@
 							href="{% url 'shop' %}">Shop</a></li>
 					<li class="nav-item {% if active_page == 'about' %}active{% endif %}"><a class="nav-link"
 							href="{% url 'index' %}">About us</a></li>
-					{% if request.session.current_shopdomain %}
-					<li class="nav-item {% if orderdetails %}active{% endif %}"><a class="nav-link"
+					{% if request.session.current_shopdomain and request.session.customer %}					
+							<li class="nav-item {% if orderdetails %}active{% endif %}"><a class="nav-link"
 							href="{% url 'myorders' request.session.current_shopdomain %}">My Orders</a></li>
 					{% endif %}
 					<!-- <li class="nav-item {% if active_page == 'services' %}active{% endif %}"><a class="nav-link"

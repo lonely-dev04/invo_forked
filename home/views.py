@@ -157,14 +157,17 @@ def thankyou(request, shopdomain):
     return render(request, 'home/thankyou.html')
 
 def myorders(request, shopdomain):
-    shop = Shop.objects.get(shop_domain=shopdomain)
-    customer_id = request.session['customer']
-    customer = Customer.objects.get(customer_id=customer_id)
-    orders = Order.objects.filter(customer=customer, shop_id=shop)
-    orderdetails = []
+    if 'customer' in request.session:
+        shop = Shop.objects.get(shop_domain=shopdomain)
+        customer_id = request.session['customer']
+        customer = Customer.objects.get(customer_id=customer_id)
+        orders = Order.objects.filter(customer=customer, shop_id=shop)
+        orderdetails = []
 
-    for order in orders:
-        order_details = OrderDetails.objects.filter(order=order)
-        orderdetails.append({'order': order, 'details': order_details})
+        for order in orders:
+            order_details = OrderDetails.objects.filter(order=order)
+            orderdetails.append({'order': order, 'details': order_details})
 
-    return render(request, 'home/myorders.html', {'orderdetails': orderdetails})
+        return render(request, 'home/myorders.html', {'orderdetails': orderdetails})
+    else:
+        return redirect('shop')
