@@ -79,9 +79,9 @@ def customer_login(request):
             email = request.POST['email']
             password = request.POST['password']
 
-            user = Customer.objects.filter(email=email, password=password).first()
+            user = Customer.objects.filter(email=email).first()
             
-            if user is not None:
+            if user is not None and check_password(password, user.password):
                 request.session['customer'] = user.customer_id
                 request.session['customer_name'] = user.name.split()[0]
                 return redirect("index")
@@ -120,7 +120,7 @@ def customer_register(request):
             address_state = request.POST['address_state']
             address_pin = request.POST['address_pin']
 
-            new_customer = Customer(name = name, email = email, password = password, phone = phone, address = address, address_city = address_city, address_state = address_state, address_pin = address_pin)
+            new_customer = Customer(name = name, email = email, password = make_password(password), phone = phone, address = address, address_city = address_city, address_state = address_state, address_pin = address_pin)
             new_customer.save()
             messages.success(request, 'Registration Successful. Login to continue')
             return redirect('customer_login')
