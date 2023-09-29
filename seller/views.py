@@ -52,7 +52,7 @@ def sales(request,shopdomain):
 def orders(request,shopdomain):
     if 'shop' in request.session:
         shop_id = request.session['shop']
-        orders = Order.objects.filter(shop_id = shop_id, order_mode=1, completed = 0)
+        orders = Order.objects.filter(shop_id = shop_id, order_mode=1)
         
         orderdetails = []
 
